@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Mail, Phone, Calendar, CreditCard, AlertTriangle, ArrowLeft, Edit, GraduationCap, IdCard } from 'lucide-react';
+import { X, User, Mail, Phone, Calendar, CreditCard, AlertTriangle, ArrowLeft, Edit, GraduationCap, Car as IdCard } from 'lucide-react';
 import { Teacher } from '../types';
 import TeacherIDCard from './TeacherIDCard';
 
