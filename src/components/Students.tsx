@@ -4,11 +4,14 @@ import { useApp } from '../context/AppContext';
 import { Student } from '../types';
 import { studentsApi } from '../services/api';
 import StudentForm from './StudentForm';
+import StudentView from './StudentView';
 
 const Students: React.FC = () => {
   const { state, dispatch } = useApp();
   const [showForm, setShowForm] = useState(false);
+  const [showView, setShowView] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  const [viewingStudent, setViewingStudent] = useState<Student | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -21,6 +24,11 @@ const Students: React.FC = () => {
   const handleAddStudent = () => {
     setEditingStudent(null);
     setShowForm(true);
+  };
+
+  const handleViewStudent = (student: Student) => {
+    setViewingStudent(student);
+    setShowView(true);
   };
 
   const handleEditStudent = (student: Student) => {
@@ -63,6 +71,24 @@ const Students: React.FC = () => {
         onCancel={() => {
           setShowForm(false);
           setEditingStudent(null);
+        }}
+      />
+    );
+  }
+
+  if (showView && viewingStudent) {
+    return (
+      <StudentView
+        student={viewingStudent}
+        onClose={() => {
+          setShowView(false);
+          setViewingStudent(null);
+        }}
+        onEdit={() => {
+          setShowView(false);
+          setEditingStudent(viewingStudent);
+          setViewingStudent(null);
+          setShowForm(true);
         }}
       />
     );
@@ -119,23 +145,25 @@ const Students: React.FC = () => {
                       <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
                         <span>Roll No: {student.rollNumber}</span>
                         <span>Class: {student.grade}</span>
+                        <span>Age: {student.age} years</span>
                       </div>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => handleEditStudent(student)}
+                      onClick={() => handleViewStudent(student)}
                       className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Edit Student"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                       title="View Details"
                     >
                       <Eye className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleEditStudent(student)}
+                      className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                      title="Edit Student"
+                    >
+                      <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteStudent(student.id)}

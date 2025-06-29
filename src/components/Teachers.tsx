@@ -4,11 +4,14 @@ import { Teacher } from '../types';
 import { teachersApi } from '../services/api';
 import { useApp } from '../context/AppContext';
 import TeacherForm from './TeacherForm';
+import TeacherView from './TeacherView';
 
 const Teachers: React.FC = () => {
   const { state, dispatch } = useApp();
   const [showForm, setShowForm] = useState(false);
+  const [showView, setShowView] = useState(false);
   const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
+  const [viewingTeacher, setViewingTeacher] = useState<Teacher | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -21,6 +24,11 @@ const Teachers: React.FC = () => {
   const handleAddTeacher = () => {
     setEditingTeacher(null);
     setShowForm(true);
+  };
+
+  const handleViewTeacher = (teacher: Teacher) => {
+    setViewingTeacher(teacher);
+    setShowView(true);
   };
 
   const handleEditTeacher = (teacher: Teacher) => {
@@ -56,6 +64,24 @@ const Teachers: React.FC = () => {
         onCancel={() => {
           setShowForm(false);
           setEditingTeacher(null);
+        }}
+      />
+    );
+  }
+
+  if (showView && viewingTeacher) {
+    return (
+      <TeacherView
+        teacher={viewingTeacher}
+        onClose={() => {
+          setShowView(false);
+          setViewingTeacher(null);
+        }}
+        onEdit={() => {
+          setShowView(false);
+          setEditingTeacher(viewingTeacher);
+          setViewingTeacher(null);
+          setShowForm(true);
         }}
       />
     );
@@ -119,17 +145,18 @@ const Teachers: React.FC = () => {
                   
                   <div className="flex items-center space-x-2">
                     <button
+                      onClick={() => handleViewTeacher(teacher)}
+                      className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      title="View Details"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button
                       onClick={() => handleEditTeacher(teacher)}
                       className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                       title="Edit Teacher"
                     >
                       <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="View Details"
-                    >
-                      <Eye className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteTeacher(teacher.id)}
