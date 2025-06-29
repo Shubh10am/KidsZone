@@ -42,10 +42,10 @@ const initialState: AppState = {
   error: null,
   schoolInfo: {
     name: "KID'S ZONE ACADEMY",
-    address: '123 Learning Street, Education City, EC 12345',
-    phone: '+1 (555) 123-4567',
-    email: 'info@kidszoneacademy.edu',
-    website: 'www.kidszoneacademy.edu',
+    address: 'Infront Of St. Mary\'s School Zamania Ghazipur Uttar Pradesh',
+    phone: '+91 9876543210',
+    email: 'info@kidzoneacademyy.in',
+    website: 'kidzoneacademyy.in',
     logo: '/Kid-Zone Logo.png',
   },
 };

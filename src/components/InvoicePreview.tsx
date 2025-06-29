@@ -28,6 +28,10 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose }) => 
     setShowTemplates(false);
   };
 
+  const handleWebsiteClick = () => {
+    window.open('https://kidszoneacademyy.netlify.app/', '_blank');
+  };
+
   const getTemplateStyles = () => {
     switch (selectedTemplate) {
       case 'classic':
@@ -131,15 +135,38 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose }) => 
           {/* School Header */}
           <div className={`${styles.headerBg} p-8 ${styles.headerText}`}>
             <div className="flex justify-between items-start">
-              <div>
-                <h1 className="text-3xl font-bold mb-2">{state.schoolInfo.name}</h1>
-                <p className="opacity-90">{state.schoolInfo.address}</p>
-                <div className="flex space-x-4 mt-2 text-sm opacity-80">
-                  <span>Phone: {state.schoolInfo.phone}</span>
-                  <span>Email: {state.schoolInfo.email}</span>
-                  <span>Web: {state.schoolInfo.website}</span>
+              <div className="flex items-start space-x-6">
+                {/* Logo */}
+                <div className="flex-shrink-0">
+                  <img 
+                    src={state.schoolInfo.logo} 
+                    alt={state.schoolInfo.name}
+                    className="w-20 h-20 rounded-lg bg-white p-2 shadow-lg"
+                    onError={(e) => {
+                      // Fallback if logo fails to load
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
+                
+                {/* School Info */}
+                <div>
+                  <h1 className="text-3xl font-bold mb-2">{state.schoolInfo.name}</h1>
+                  <p className="opacity-90 mb-2">{state.schoolInfo.address}</p>
+                  <div className="flex flex-wrap gap-4 text-sm opacity-80">
+                    <span>Phone: {state.schoolInfo.phone}</span>
+                    <span>Email: {state.schoolInfo.email}</span>
+                    <button 
+                      onClick={handleWebsiteClick}
+                      className="hover:underline cursor-pointer"
+                    >
+                      Web: {state.schoolInfo.website}
+                    </button>
+                  </div>
                 </div>
               </div>
+              
+              {/* Decorative Element for Colorful Template */}
               {selectedTemplate === 'colorful' && (
                 <div className="hidden lg:block">
                   <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -174,10 +201,10 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose }) => 
             <div className="text-right md:text-left">
               <h3 className="text-lg font-semibold text-gray-900 mb-3">Bill To:</h3>
               <div className="text-sm space-y-1">
-                <p className="font-semibold">{invoice.student.parentName}</p>
+                <p className="font-semibold">{invoice.student.parentName || 'Parent/Guardian'}</p>
                 <p>Parent/Guardian of {invoice.student.name}</p>
-                <p>{invoice.student.address}</p>
-                <p>{invoice.student.parentPhone}</p>
+                <p>{state.schoolInfo.address}</p>
+                <p>{invoice.student.emergencyNumber}</p>
                 <p>{invoice.student.parentEmail}</p>
               </div>
             </div>
