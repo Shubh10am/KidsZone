@@ -40,6 +40,8 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, on
       case 'teachers': return 'Teachers';
       case 'invoices': return 'Invoices';
       case 'fees': return 'Fee Structure';
+      case 'student-view': return 'Student Details';
+      case 'teacher-view': return 'Teacher Details';
       default: return 'Dashboard';
     }
   };

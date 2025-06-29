@@ -16,8 +16,23 @@ const StudentIDCard: React.FC<StudentIDCardProps> = ({ student, onClose }) => {
   };
 
   const handleDownload = () => {
-    // Create a new window for printing/downloading
-    const printWindow = window.open('', '_blank');
+    // Create a canvas to generate the ID card as an image
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    if (!ctx) {
+      alert('Canvas not supported. Please try printing instead.');
+      return;
+    }
+
+    // Set canvas size for ID card (standard credit card size in pixels at 300 DPI)
+    const cardWidth = 1012; // 85.6mm at 300 DPI
+    const cardHeight = 638; // 53.98mm at 300 DPI
+    canvas.width = cardWidth;
+    canvas.height = cardHeight;
+
+    // Create a new window with printable content
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
     if (printWindow) {
       printWindow.document.write(`
         <!DOCTYPE html>
@@ -26,46 +41,277 @@ const StudentIDCard: React.FC<StudentIDCardProps> = ({ student, onClose }) => {
           <title>Student ID Card - ${student.name}</title>
           <style>
             @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-            * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-            body { background: #f0f0f0; padding: 20px; }
-            .page { width: 210mm; height: 297mm; background: white; margin: 0 auto 20px; padding: 20mm; page-break-after: always; }
-            .id-card { width: 85.6mm; height: 53.98mm; margin: 0 auto; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-            .front-card { background: linear-gradient(135deg, #dbeafe 0%, #c7d2fe 100%); border: 2px solid #3b82f6; }
-            .back-card { background: linear-gradient(135deg, #f9fafb 0%, #dbeafe 100%); border: 2px solid #6b7280; }
-            .card-header { text-align: center; padding: 8px; background: rgba(59, 130, 246, 0.1); border-bottom: 1px solid #3b82f6; }
-            .school-logo { width: 24px; height: 24px; border-radius: 4px; margin: 0 auto 4px; }
-            .school-name { font-size: 10px; font-weight: 700; color: #1e40af; margin-bottom: 2px; }
-            .card-type { font-size: 6px; color: #3730a3; }
-            .card-body { padding: 8px; }
-            .photo-section { text-align: center; margin-bottom: 8px; }
-            .photo-placeholder { width: 40px; height: 48px; background: #e5e7eb; border-radius: 4px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-            .photo-initial { width: 28px; height: 28px; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #2563eb; }
-            .student-name { font-size: 12px; font-weight: 700; color: #111827; text-align: center; margin: 6px 0 2px; }
-            .student-class { font-size: 8px; color: #2563eb; font-weight: 600; text-align: center; margin-bottom: 6px; }
-            .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 6px; }
-            .detail-item { background: white; padding: 4px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-            .detail-label { font-size: 5px; color: #6b7280; margin-bottom: 1px; }
-            .detail-value { font-size: 7px; font-weight: 700; color: #111827; }
-            .full-width { grid-column: 1 / -1; }
-            .card-footer { text-align: center; padding-top: 6px; border-top: 1px solid #3b82f6; }
-            .academic-year { font-size: 6px; color: #3730a3; font-weight: 600; }
-            .issue-date { font-size: 5px; color: #6b7280; margin-top: 2px; }
-            .back-content { padding: 8px; }
-            .back-title { font-size: 10px; font-weight: 700; color: #111827; text-align: center; margin-bottom: 6px; }
-            .back-section { margin-bottom: 6px; }
-            .back-section-title { font-size: 7px; font-weight: 600; color: #111827; margin-bottom: 3px; }
-            .back-text { font-size: 6px; color: #374151; line-height: 1.3; }
-            .instructions { list-style: none; }
-            .instructions li { font-size: 5px; color: #374151; margin-bottom: 1px; }
-            .motto { background: #dbeafe; padding: 4px; border-radius: 4px; text-align: center; margin-top: 6px; }
-            .motto-text { font-size: 6px; color: #1e40af; font-weight: 600; }
-            @media print { body { background: white; padding: 0; } .page { margin: 0; padding: 10mm; box-shadow: none; } }
+            * { 
+              margin: 0; 
+              padding: 0; 
+              box-sizing: border-box; 
+              font-family: 'Poppins', sans-serif; 
+            }
+            
+            body { 
+              background: #f0f0f0; 
+              padding: 20px; 
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              min-height: 100vh;
+            }
+            
+            .page { 
+              width: 210mm; 
+              min-height: 297mm; 
+              background: white; 
+              margin: 0 auto 20px; 
+              padding: 20mm; 
+              page-break-after: always;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+            }
+            
+            .page-title {
+              text-align: center;
+              margin-bottom: 30px;
+              color: #1f2937;
+              font-size: 24px;
+              font-weight: 600;
+            }
+            
+            .id-card { 
+              width: 85.6mm; 
+              height: 53.98mm; 
+              border-radius: 8px; 
+              overflow: hidden; 
+              box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+              border: 2px solid #e5e7eb;
+            }
+            
+            .front-card { 
+              background: linear-gradient(135deg, #dbeafe 0%, #c7d2fe 100%); 
+              border: 2px solid #3b82f6; 
+            }
+            
+            .back-card { 
+              background: linear-gradient(135deg, #f9fafb 0%, #dbeafe 100%); 
+              border: 2px solid #6b7280; 
+            }
+            
+            .card-header { 
+              text-align: center; 
+              padding: 6px; 
+              background: rgba(59, 130, 246, 0.1); 
+              border-bottom: 1px solid #3b82f6; 
+            }
+            
+            .school-name { 
+              font-size: 9px; 
+              font-weight: 700; 
+              color: #1e40af; 
+              margin-bottom: 2px; 
+              line-height: 1.2;
+            }
+            
+            .card-type { 
+              font-size: 6px; 
+              color: #3730a3; 
+              font-weight: 500;
+            }
+            
+            .card-body { 
+              padding: 6px; 
+              height: calc(100% - 40px);
+              display: flex;
+              flex-direction: column;
+            }
+            
+            .photo-section { 
+              text-align: center; 
+              margin-bottom: 6px; 
+            }
+            
+            .photo-placeholder { 
+              width: 32px; 
+              height: 38px; 
+              background: #e5e7eb; 
+              border-radius: 4px; 
+              margin: 0 auto; 
+              display: flex; 
+              align-items: center; 
+              justify-content: center; 
+              border: 2px solid white; 
+              box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            }
+            
+            .photo-initial { 
+              width: 20px; 
+              height: 20px; 
+              background: #dbeafe; 
+              border-radius: 50%; 
+              display: flex; 
+              align-items: center; 
+              justify-content: center; 
+              font-size: 10px; 
+              font-weight: 700; 
+              color: #2563eb; 
+            }
+            
+            .student-name { 
+              font-size: 10px; 
+              font-weight: 700; 
+              color: #111827; 
+              text-align: center; 
+              margin: 4px 0 2px; 
+              line-height: 1.1;
+            }
+            
+            .student-class { 
+              font-size: 7px; 
+              color: #2563eb; 
+              font-weight: 600; 
+              text-align: center; 
+              margin-bottom: 4px; 
+            }
+            
+            .details-grid { 
+              display: grid; 
+              grid-template-columns: 1fr 1fr; 
+              gap: 3px; 
+              margin-bottom: 4px; 
+              flex: 1;
+            }
+            
+            .detail-item { 
+              background: white; 
+              padding: 3px; 
+              border-radius: 3px; 
+              box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+            }
+            
+            .detail-label { 
+              font-size: 5px; 
+              color: #6b7280; 
+              margin-bottom: 1px; 
+              font-weight: 500;
+            }
+            
+            .detail-value { 
+              font-size: 6px; 
+              font-weight: 700; 
+              color: #111827; 
+              line-height: 1.1;
+            }
+            
+            .full-width { 
+              grid-column: 1 / -1; 
+            }
+            
+            .card-footer { 
+              text-align: center; 
+              padding-top: 4px; 
+              border-top: 1px solid #3b82f6; 
+              margin-top: auto;
+            }
+            
+            .academic-year { 
+              font-size: 5px; 
+              color: #3730a3; 
+              font-weight: 600; 
+            }
+            
+            .issue-date { 
+              font-size: 4px; 
+              color: #6b7280; 
+              margin-top: 1px; 
+            }
+            
+            .back-content { 
+              padding: 6px; 
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+            }
+            
+            .back-title { 
+              font-size: 8px; 
+              font-weight: 700; 
+              color: #111827; 
+              text-align: center; 
+              margin-bottom: 4px; 
+            }
+            
+            .back-section { 
+              margin-bottom: 4px; 
+            }
+            
+            .back-section-title { 
+              font-size: 6px; 
+              font-weight: 600; 
+              color: #111827; 
+              margin-bottom: 2px; 
+            }
+            
+            .back-text { 
+              font-size: 5px; 
+              color: #374151; 
+              line-height: 1.3; 
+              margin-bottom: 1px;
+            }
+            
+            .instructions { 
+              list-style: none; 
+              margin: 0;
+              padding: 0;
+            }
+            
+            .instructions li { 
+              font-size: 4px; 
+              color: #374151; 
+              margin-bottom: 1px; 
+              line-height: 1.2;
+            }
+            
+            .motto { 
+              background: #dbeafe; 
+              padding: 3px; 
+              border-radius: 3px; 
+              text-align: center; 
+              margin-top: auto;
+            }
+            
+            .motto-text { 
+              font-size: 5px; 
+              color: #1e40af; 
+              font-weight: 600; 
+            }
+            
+            @media print { 
+              body { 
+                background: white; 
+                padding: 0; 
+              } 
+              .page { 
+                margin: 0; 
+                padding: 10mm; 
+                box-shadow: none; 
+                page-break-after: always;
+              }
+              .page-title {
+                font-size: 18px;
+                margin-bottom: 20px;
+              }
+            }
+            
+            @page {
+              size: A4;
+              margin: 10mm;
+            }
           </style>
         </head>
         <body>
           <!-- Front Side Page -->
           <div class="page">
-            <h2 style="text-align: center; margin-bottom: 20px; color: #1f2937;">Student ID Card - Front</h2>
+            <h2 class="page-title">Student ID Card - Front</h2>
             <div class="id-card front-card">
               <div class="card-header">
                 <div class="school-name">${state.schoolInfo.name}</div>
@@ -107,7 +353,7 @@ const StudentIDCard: React.FC<StudentIDCardProps> = ({ student, onClose }) => {
 
           <!-- Back Side Page -->
           <div class="page">
-            <h2 style="text-align: center; margin-bottom: 20px; color: #1f2937;">Student ID Card - Back</h2>
+            <h2 class="page-title">Student ID Card - Back</h2>
             <div class="id-card back-card">
               <div class="back-content">
                 <div class="back-title">Important Information</div>
@@ -136,14 +382,29 @@ const StudentIDCard: React.FC<StudentIDCardProps> = ({ student, onClose }) => {
               </div>
             </div>
           </div>
+          
+          <script>
+            // Auto-trigger print dialog after content loads
+            window.onload = function() {
+              setTimeout(function() {
+                window.print();
+              }, 500);
+            };
+            
+            // Close window after printing
+            window.onafterprint = function() {
+              setTimeout(function() {
+                window.close();
+              }, 1000);
+            };
+          </script>
         </body>
         </html>
       `);
       printWindow.document.close();
       printWindow.focus();
-      setTimeout(() => {
-        printWindow.print();
-      }, 250);
+    } else {
+      alert('Pop-up blocked. Please allow pop-ups for this site to download the ID card.');
     }
   };
 
@@ -158,7 +419,7 @@ const StudentIDCard: React.FC<StudentIDCardProps> = ({ student, onClose }) => {
               <button
                 onClick={handleDownload}
                 className="flex items-center px-3 py-2 bg-white bg-opacity-20 text-white rounded-lg hover:bg-opacity-30 transition-colors"
-                title="Download PDF"
+                title="Download & Print PDF"
               >
                 <Download className="w-4 h-4 mr-2" />
                 Download

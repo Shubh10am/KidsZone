@@ -194,7 +194,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div ref={searchRef} className="relative w-full max-w-md">
+    <div ref={searchRef} className="relative w-full max-w-lg">
       {/* Search Input */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -206,7 +206,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
           onChange={(e) => setSearchTerm(e.target.value)}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
-          className="w-full pl-10 pr-10 py-2 bg-gray-100 rounded-lg text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+          className="w-full pl-10 pr-10 py-2.5 bg-gray-100 rounded-lg text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
         />
         {searchTerm && (
           <button
@@ -220,41 +220,39 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
 
       {/* Search Results Dropdown */}
       {isOpen && (searchTerm.trim() || results.length > 0) && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-96 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 max-h-[500px] overflow-hidden">
           {results.length > 0 ? (
             <>
-              <div className="px-4 py-2 border-b border-gray-100">
-                <p className="text-xs text-gray-500 font-medium">
+              <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+                <p className="text-xs text-gray-600 font-medium">
                   {results.length} result{results.length !== 1 ? 's' : ''} found
                 </p>
               </div>
-              <div className="py-2">
+              <div className="max-h-[400px] overflow-y-auto">
                 {results.map((result, index) => (
                   <button
                     key={`${result.type}-${result.item.id}`}
                     onClick={() => handleResultClick(result)}
-                    className={`w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors ${
-                      index === selectedIndex ? 'bg-blue-50 border-r-2 border-blue-500' : ''
+                    className={`w-full px-4 py-4 text-left hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-b-0 ${
+                      index === selectedIndex ? 'bg-blue-50 border-r-4 border-blue-500' : ''
                     }`}
                   >
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                         result.type === 'student' ? 'bg-blue-100' : 'bg-green-100'
                       }`}>
                         {result.type === 'student' ? (
-                          <User className={`w-4 h-4 ${
-                            result.type === 'student' ? 'text-blue-600' : 'text-green-600'
-                          }`} />
+                          <User className="w-5 h-5 text-blue-600" />
                         ) : (
-                          <GraduationCap className="w-4 h-4 text-green-600" />
+                          <GraduationCap className="w-5 h-5 text-green-600" />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2">
-                          <p className="text-sm font-medium text-gray-900 truncate">
+                        <div className="flex items-center space-x-3 mb-1">
+                          <p className="text-sm font-semibold text-gray-900 truncate">
                             {highlightMatch(result.item.name, searchTerm)}
                           </p>
-                          <span className={`px-2 py-1 text-xs rounded-full ${
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full flex-shrink-0 ${
                             result.type === 'student' 
                               ? 'bg-blue-100 text-blue-700' 
                               : 'bg-green-100 text-green-700'
@@ -262,29 +260,29 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
                             {result.type === 'student' ? 'Student' : 'Teacher'}
                           </span>
                         </div>
-                        <div className="flex items-center space-x-4 mt-1">
+                        <div className="flex items-center space-x-4 mb-1">
                           {result.type === 'student' ? (
                             <>
-                              <p className="text-xs text-gray-500">
-                                Roll: {highlightMatch((result.item as Student).rollNumber, searchTerm)}
+                              <p className="text-xs text-gray-600">
+                                Roll: <span className="font-medium">{highlightMatch((result.item as Student).rollNumber, searchTerm)}</span>
                               </p>
-                              <p className="text-xs text-gray-500">
-                                Grade: {(result.item as Student).grade}
+                              <p className="text-xs text-gray-600">
+                                Grade: <span className="font-medium">{(result.item as Student).grade}</span>
                               </p>
                             </>
                           ) : (
                             <>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-gray-600 truncate">
                                 {highlightMatch((result.item as Teacher).email, searchTerm)}
                               </p>
-                              <p className="text-xs text-gray-500">
-                                Age: {(result.item as Teacher).age}
+                              <p className="text-xs text-gray-600">
+                                Age: <span className="font-medium">{(result.item as Teacher).age}</span>
                               </p>
                             </>
                           )}
                         </div>
-                        <p className="text-xs text-gray-400 mt-1">
-                          Matched by: {result.matchField}
+                        <p className="text-xs text-gray-500">
+                          Matched by: <span className="font-medium text-gray-600">{result.matchField}</span>
                         </p>
                       </div>
                     </div>
@@ -293,27 +291,29 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
               </div>
             </>
           ) : searchTerm.trim() ? (
-            <div className="px-4 py-8 text-center">
-              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Search className="w-6 h-6 text-gray-400" />
+            <div className="px-6 py-8 text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="w-8 h-8 text-gray-400" />
               </div>
-              <p className="text-sm text-gray-500 mb-1">No results found</p>
-              <p className="text-xs text-gray-400">
+              <p className="text-sm font-medium text-gray-700 mb-2">No results found</p>
+              <p className="text-xs text-gray-500">
                 Try searching by name, roll number, or email
               </p>
             </div>
           ) : (
-            <div className="px-4 py-6 text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Search className="w-6 h-6 text-blue-600" />
+            <div className="px-6 py-8 text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="w-8 h-8 text-blue-600" />
               </div>
-              <p className="text-sm text-gray-700 mb-1">Quick Search</p>
-              <p className="text-xs text-gray-500">
-                Search for students by name, roll number, or grade
-              </p>
-              <p className="text-xs text-gray-500">
-                Search for teachers by name, email, or mobile
-              </p>
+              <p className="text-sm font-semibold text-gray-800 mb-2">Quick Search</p>
+              <div className="space-y-1">
+                <p className="text-xs text-gray-600">
+                  🎓 Search students by name, roll number, or grade
+                </p>
+                <p className="text-xs text-gray-600">
+                  👨‍🏫 Search teachers by name, email, or mobile
+                </p>
+              </div>
             </div>
           )}
         </div>
