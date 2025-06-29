@@ -10,7 +10,8 @@ import {
   Bell,
   Search,
   GraduationCap,
-  ChevronDown
+  ChevronDown,
+  Clock
 } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
 import { Student, Teacher } from '../types';
@@ -29,6 +30,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, on
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'students', label: 'Students', icon: Users },
     { id: 'teachers', label: 'Teachers', icon: GraduationCap },
+    { id: 'attendance', label: 'Attendance', icon: Clock },
     { id: 'invoices', label: 'Invoices', icon: FileText },
     { id: 'fees', label: 'Fee Structure', icon: DollarSign },
   ];
@@ -38,6 +40,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, on
       case 'dashboard': return 'Dashboard';
       case 'students': return 'Students';
       case 'teachers': return 'Teachers';
+      case 'attendance': return 'Attendance';
       case 'invoices': return 'Invoices';
       case 'fees': return 'Fee Structure';
       case 'student-view': return 'Student Details';

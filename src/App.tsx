@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import Students from './components/Students';
 import Teachers from './components/Teachers';
+import Attendance from './components/Attendance';
 import Invoices from './components/Invoices';
 import FeeStructure from './components/FeeStructure';
 import StudentView from './components/StudentView';
@@ -41,6 +42,8 @@ function App() {
         return <Students />;
       case 'teachers':
         return <Teachers />;
+      case 'attendance':
+        return <Attendance />;
       case 'invoices':
         return <Invoices />;
       case 'fees':

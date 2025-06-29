@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { Student, Teacher, Invoice, FeeItem, SchoolInfo } from '../types';
+import { Student, Teacher, Invoice, FeeItem, SchoolInfo, Attendance } from '../types';
 import { studentsApi, teachersApi, invoicesApi, feeItemsApi } from '../services/api';
 
 interface AppState {
@@ -7,6 +7,7 @@ interface AppState {
   teachers: Teacher[];
   invoices: Invoice[];
   feeItems: FeeItem[];
+  attendance: Attendance[];
   schoolInfo: SchoolInfo;
   loading: boolean;
   error: string | null;
@@ -31,6 +32,10 @@ type AppAction =
   | { type: 'ADD_FEE_ITEM'; payload: FeeItem }
   | { type: 'UPDATE_FEE_ITEM'; payload: FeeItem }
   | { type: 'DELETE_FEE_ITEM'; payload: string }
+  | { type: 'SET_ATTENDANCE'; payload: Attendance[] }
+  | { type: 'ADD_ATTENDANCE'; payload: Attendance }
+  | { type: 'UPDATE_ATTENDANCE'; payload: Attendance }
+  | { type: 'DELETE_ATTENDANCE'; payload: string }
   | { type: 'UPDATE_SCHOOL_INFO'; payload: SchoolInfo };
 
 const initialState: AppState = {
@@ -38,6 +43,7 @@ const initialState: AppState = {
   teachers: [],
   invoices: [],
   feeItems: [],
+  attendance: [],
   loading: false,
   error: null,
   schoolInfo: {
@@ -84,6 +90,7 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
       return {
         ...state,
         teachers: state.teachers.filter(t => t.id !== action.payload),
+        attendance: state.attendance.filter(a => a.teacherId !== action.payload),
       };
     case 'SET_INVOICES':
       return { ...state, invoices: action.payload };
@@ -112,6 +119,20 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
       return {
         ...state,
         feeItems: state.feeItems.filter(f => f.id !== action.payload),
+      };
+    case 'SET_ATTENDANCE':
+      return { ...state, attendance: action.payload };
+    case 'ADD_ATTENDANCE':
+      return { ...state, attendance: [...state.attendance, action.payload] };
+    case 'UPDATE_ATTENDANCE':
+      return {
+        ...state,
+        attendance: state.attendance.map(a => a.id === action.payload.id ? action.payload : a),
+      };
+    case 'DELETE_ATTENDANCE':
+      return {
+        ...state,
+        attendance: state.attendance.filter(a => a.id !== action.payload),
       };
     case 'UPDATE_SCHOOL_INFO':
       return { ...state, schoolInfo: action.payload };

@@ -73,3 +73,28 @@ export interface SchoolInfo {
   website: string;
   logo?: string;
 }
+
+export interface Attendance {
+  id: string;
+  teacherId: string;
+  teacher: Teacher;
+  date: string;
+  checkInTime: string;
+  checkOutTime?: string;
+  status: 'present' | 'absent' | 'late' | 'half-day';
+  workingHours?: number;
+  notes?: string;
+  location?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AttendanceStats {
+  totalDays: number;
+  presentDays: number;
+  absentDays: number;
+  lateDays: number;
+  halfDays: number;
+  attendancePercentage: number;
+  averageWorkingHours: number;
+}
