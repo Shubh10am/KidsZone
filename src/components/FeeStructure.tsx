@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, DollarSign } from 'lucide-react';
+import { Plus, Edit, Trash2, DollarSign, ArrowLeft, Save } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { FeeItem } from '../types';
+import { feeItemsApi } from '../services/api';
 
 const FeeStructure: React.FC = () => {
   const { state, dispatch } = useApp();
@@ -14,6 +15,7 @@ const FeeStructure: React.FC = () => {
     grade: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
 
   const grades = [
     'All Grades', 'Pre-K', 'Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 
@@ -37,9 +39,18 @@ const FeeStructure: React.FC = () => {
     setShowForm(true);
   };
 
-  const handleDeleteFee = (feeId: string) => {
+  const handleDeleteFee = async (feeId: string) => {
     if (window.confirm('Are you sure you want to delete this fee item?')) {
-      dispatch({ type: 'DELETE_FEE_ITEM', payload: feeId });
+      setLoading(true);
+      try {
+        await feeItemsApi.delete(feeId);
+        dispatch({ type: 'DELETE_FEE_ITEM', payload: feeId });
+      } catch (error) {
+        console.error('Error deleting fee item:', error);
+        dispatch({ type: 'SET_ERROR', payload: 'Failed to delete fee item. Please try again.' });
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -55,33 +66,42 @@ const FeeStructure: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) return;
 
-    const feeData: Omit<FeeItem, 'id'> = {
-      name: formData.name.trim(),
-      amount: parseFloat(formData.amount),
-      type: formData.type,
-      grade: formData.grade || undefined,
-    };
+    setLoading(true);
+    try {
+      const feeData = {
+        name: formData.name.trim(),
+        amount: parseFloat(formData.amount),
+        type: formData.type,
+        grade: formData.grade || undefined,
+      };
 
-    if (editingFee) {
-      dispatch({
-        type: 'UPDATE_FEE_ITEM',
-        payload: { ...feeData, id: editingFee.id },
-      });
-    } else {
-      dispatch({
-        type: 'ADD_FEE_ITEM',
-        payload: { ...feeData, id: Date.now().toString() },
-      });
+      let savedFee: FeeItem;
+
+      if (editingFee) {
+        const response = await feeItemsApi.update(editingFee.id, feeData);
+        savedFee = response.data;
+        dispatch({ type: 'UPDATE_FEE_ITEM', payload: savedFee });
+      } else {
+        const response = await feeItemsApi.create(feeData);
+        savedFee = response.data;
+        dispatch({ type: 'ADD_FEE_ITEM', payload: savedFee });
+      }
+
+      setShowForm(false);
+      setEditingFee(null);
+      setFormData({ name: '', amount: '', type: 'monthly', grade: '' });
+      setErrors({});
+    } catch (error) {
+      console.error('Error saving fee item:', error);
+      dispatch({ type: 'SET_ERROR', payload: 'Failed to save fee item. Please try again.' });
+    } finally {
+      setLoading(false);
     }
-
-    setShowForm(false);
-    setEditingFee(null);
-    setFormData({ name: '', amount: '', type: 'monthly', grade: '' });
   };
 
   const handleCancel = () => {
@@ -113,34 +133,37 @@ const FeeStructure: React.FC = () => {
     }
   };
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Fee Structure</h2>
-          <p className="text-gray-600">Manage school fees and charges</p>
-        </div>
-        <button
-          onClick={handleAddFee}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Add Fee Item
-        </button>
-      </div>
-
-      {/* Fee Form */}
-      {showForm && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            {editingFee ? 'Edit Fee Item' : 'Add New Fee Item'}
-          </h3>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  if (showForm) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={handleCancel}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5 text-gray-600" />
+              </button>
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <h1 className="text-2xl font-bold text-gray-900">
+                  {editingFee ? 'Edit Fee Item' : 'Add New Fee Item'}
+                </h1>
+                <p className="text-gray-600">Configure fee structure for the academy</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Fee Information */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Fee Information</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                   Fee Name *
                 </label>
                 <input
@@ -154,11 +177,11 @@ const FeeStructure: React.FC = () => {
                   }`}
                   placeholder="Enter fee name"
                 />
-                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
               </div>
 
               <div>
-                <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
                   Amount ($) *
                 </label>
                 <input
@@ -174,13 +197,11 @@ const FeeStructure: React.FC = () => {
                   }`}
                   placeholder="0.00"
                 />
-                {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount}</p>}
+                {errors.amount && <p className="text-red-500 text-sm mt-1">{errors.amount}</p>}
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
                   Fee Type
                 </label>
                 <select
@@ -197,7 +218,7 @@ const FeeStructure: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="grade" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="grade" className="block text-sm font-medium text-gray-700 mb-2">
                   Applicable Grade (Optional)
                 </label>
                 <select
@@ -214,25 +235,53 @@ const FeeStructure: React.FC = () => {
                 </select>
               </div>
             </div>
+          </div>
 
-            <div className="flex justify-end space-x-3">
+          {/* Actions */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex justify-end space-x-4">
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                disabled={loading}
+                className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50"
               >
-                {editingFee ? 'Update Fee' : 'Add Fee'}
+                {loading ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                ) : (
+                  <Save className="w-4 h-4 mr-2" />
+                )}
+                {loading ? 'Saving...' : (editingFee ? 'Update Fee' : 'Add Fee')}
               </button>
             </div>
-          </form>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Fee Structure</h2>
+          <p className="text-gray-600">Manage school fees and charges</p>
         </div>
-      )}
+        <button
+          onClick={handleAddFee}
+          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+        >
+          <Plus className="w-5 h-5 mr-2" />
+          Add Fee Item
+        </button>
+      </div>
 
       {/* Fee Items List */}
       {state.feeItems.length > 0 ? (
@@ -254,12 +303,15 @@ const FeeStructure: React.FC = () => {
                   <button
                     onClick={() => handleEditFee(fee)}
                     className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                    title="Edit Fee"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDeleteFee(fee.id)}
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                    disabled={loading}
+                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 disabled:opacity-50"
+                    title="Delete Fee"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -298,6 +350,16 @@ const FeeStructure: React.FC = () => {
             <Plus className="w-5 h-5 mr-2" />
             Add First Fee Item
           </button>
+        </div>
+      )}
+
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 flex items-center space-x-4">
+            <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-gray-900 font-medium">Processing...</p>
+          </div>
         </div>
       )}
     </div>
