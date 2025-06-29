@@ -18,7 +18,7 @@ import {
 import { useApp } from '../context/AppContext';
 import { Attendance as AttendanceType, AttendanceStats, Teacher } from '../types';
 import AttendanceForm from './AttendanceForm';
-import AttendanceStats as AttendanceStatsComponent from './AttendanceStats';
+import AttendanceStatsComponent from './AttendanceStats';
 
 const Attendance: React.FC = () => {
   const { state } = useApp();
