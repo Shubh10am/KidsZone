@@ -49,8 +49,8 @@ const initialState: AppState = {
   schoolInfo: {
     name: "KID'S ZONE ACADEMY",
     address: 'Infront Of St. Mary\'s School Zamania Ghazipur Uttar Pradesh',
-    phone: '+91 9876543210',
-    email: 'info@kidzoneacademyy.in',
+    phone: '+91 6388842678',
+    email: 'kidszoneacademyy@gmail.com',
     website: 'kidzoneacademyy.in',
     logo: '/Kid-Zone Logo.png',
   },
