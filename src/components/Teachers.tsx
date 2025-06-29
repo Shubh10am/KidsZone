@@ -31,12 +31,18 @@ const Teachers: React.FC = () => {
     setShowView(true);
   };
 
-  const handleEditTeacher = (teacher: Teacher) => {
+  const handleEditTeacher = (teacher: Teacher, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation(); // Prevent card click when edit button is clicked
+    }
     setEditingTeacher(teacher);
     setShowForm(true);
   };
 
-  const handleDeleteTeacher = async (teacherId: string) => {
+  const handleDeleteTeacher = async (teacherId: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation(); // Prevent card click when delete button is clicked
+    }
     if (window.confirm('Are you sure you want to delete this teacher?')) {
       setLoading(true);
       try {
@@ -122,12 +128,17 @@ const Teachers: React.FC = () => {
       <div className="bg-white rounded-lg border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">All Teachers</h3>
+          <p className="text-sm text-gray-500 mt-1">Click on any teacher card to view details</p>
         </div>
 
         {filteredTeachers.length > 0 ? (
           <div className="divide-y divide-gray-200">
             {filteredTeachers.map((teacher) => (
-              <div key={teacher.id} className="p-6 hover:bg-gray-50 transition-colors">
+              <div 
+                key={teacher.id} 
+                className="p-6 hover:bg-gray-50 transition-colors cursor-pointer"
+                onClick={() => handleViewTeacher(teacher)}
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -145,21 +156,14 @@ const Teachers: React.FC = () => {
                   
                   <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => handleViewTeacher(teacher)}
-                      className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="View Details"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleEditTeacher(teacher)}
+                      onClick={(e) => handleEditTeacher(teacher, e)}
                       className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                       title="Edit Teacher"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => handleDeleteTeacher(teacher.id)}
+                      onClick={(e) => handleDeleteTeacher(teacher.id, e)}
                       disabled={loading}
                       className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                       title="Delete Teacher"

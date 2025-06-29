@@ -33,12 +33,18 @@ const Invoices: React.FC = () => {
     setShowForm(true);
   };
 
-  const handleEditInvoice = (invoice: Invoice) => {
+  const handleEditInvoice = (invoice: Invoice, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation(); // Prevent row click when edit button is clicked
+    }
     setEditingInvoice(invoice);
     setShowForm(true);
   };
 
-  const handleDeleteInvoice = async (invoiceId: string) => {
+  const handleDeleteInvoice = async (invoiceId: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation(); // Prevent row click when delete button is clicked
+    }
     if (window.confirm('Are you sure you want to delete this invoice?')) {
       setLoading(true);
       try {
@@ -53,7 +59,16 @@ const Invoices: React.FC = () => {
     }
   };
 
-  const handlePreviewInvoice = (invoice: Invoice) => {
+  const handlePreviewInvoice = (invoice: Invoice, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation(); // Prevent row click when preview button is clicked
+    }
+    setPreviewInvoice(invoice);
+    setShowPreview(true);
+  };
+
+  const handleRowClick = (invoice: Invoice) => {
+    // When clicking on the row, show preview
     setPreviewInvoice(invoice);
     setShowPreview(true);
   };
@@ -225,6 +240,10 @@ const Invoices: React.FC = () => {
       {/* Invoices List */}
       {filteredInvoices.length > 0 ? (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">All Invoices</h3>
+            <p className="text-sm text-gray-500 mt-1">Click on any invoice row to view details</p>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50">
@@ -254,7 +273,11 @@ const Invoices: React.FC = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredInvoices.map((invoice) => (
-                  <tr key={invoice.id} className="hover:bg-gray-50">
+                  <tr 
+                    key={invoice.id} 
+                    className="hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handleRowClick(invoice)}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
                         #{invoice.invoiceNumber}
@@ -295,21 +318,21 @@ const Invoices: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button
-                          onClick={() => handlePreviewInvoice(invoice)}
+                          onClick={(e) => handlePreviewInvoice(invoice, e)}
                           className="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded transition-colors duration-200"
                           title="Preview"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleEditInvoice(invoice)}
+                          onClick={(e) => handleEditInvoice(invoice, e)}
                           className="text-green-600 hover:text-green-900 p-1 hover:bg-green-50 rounded transition-colors duration-200"
                           title="Edit"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDeleteInvoice(invoice.id)}
+                          onClick={(e) => handleDeleteInvoice(invoice.id, e)}
                           disabled={loading}
                           className="text-red-600 hover:text-red-900 p-1 hover:bg-red-50 rounded transition-colors duration-200 disabled:opacity-50"
                           title="Delete"

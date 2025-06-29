@@ -31,12 +31,18 @@ const Students: React.FC = () => {
     setShowView(true);
   };
 
-  const handleEditStudent = (student: Student) => {
+  const handleEditStudent = (student: Student, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation(); // Prevent card click when edit button is clicked
+    }
     setEditingStudent(student);
     setShowForm(true);
   };
 
-  const handleDeleteStudent = async (studentId: string) => {
+  const handleDeleteStudent = async (studentId: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation(); // Prevent card click when delete button is clicked
+    }
     if (window.confirm('Are you sure you want to delete this student? This will also delete all associated invoices.')) {
       setLoading(true);
       try {
@@ -54,13 +60,6 @@ const Students: React.FC = () => {
   const handleSaveStudent = (student: Student) => {
     setShowForm(false);
     setEditingStudent(null);
-  };
-
-  const getParentName = (student: Student) => {
-    if (student.fatherName && student.motherName) {
-      return `${student.fatherName} & ${student.motherName}`;
-    }
-    return student.fatherName || student.motherName || student.parentName || 'Not specified';
   };
 
   if (showForm) {
@@ -129,12 +128,17 @@ const Students: React.FC = () => {
       <div className="bg-white rounded-lg border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">All Students</h3>
+          <p className="text-sm text-gray-500 mt-1">Click on any student card to view details</p>
         </div>
 
         {filteredStudents.length > 0 ? (
           <div className="divide-y divide-gray-200">
             {filteredStudents.map((student) => (
-              <div key={student.id} className="p-6 hover:bg-gray-50 transition-colors">
+              <div 
+                key={student.id} 
+                className="p-6 hover:bg-gray-50 transition-colors cursor-pointer"
+                onClick={() => handleViewStudent(student)}
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -152,21 +156,14 @@ const Students: React.FC = () => {
                   
                   <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => handleViewStudent(student)}
-                      className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="View Details"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleEditStudent(student)}
+                      onClick={(e) => handleEditStudent(student, e)}
                       className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                       title="Edit Student"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => handleDeleteStudent(student.id)}
+                      onClick={(e) => handleDeleteStudent(student.id, e)}
                       disabled={loading}
                       className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                       title="Delete Student"
