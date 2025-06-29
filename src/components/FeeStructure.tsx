@@ -182,7 +182,7 @@ const FeeStructure: React.FC = () => {
 
               <div>
                 <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
-                  Amount ($) *
+                  Amount (₹) *
                 </label>
                 <input
                   type="number"
@@ -295,7 +295,7 @@ const FeeStructure: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">{fee.name}</h3>
-                    <p className="text-2xl font-bold text-blue-600">${fee.amount.toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-blue-600">₹{fee.amount.toFixed(2)}</p>
                   </div>
                 </div>
                 

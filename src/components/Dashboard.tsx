@@ -190,7 +190,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-gray-900">${invoice.total.toFixed(2)}</p>
+                      <p className="font-semibold text-gray-900">₹{invoice.total.toFixed(2)}</p>
                       <span className={`
                         inline-flex px-2 py-1 text-xs font-medium rounded-full
                         ${invoice.status === 'paid' ? 'bg-green-100 text-green-800' :

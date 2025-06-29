@@ -223,7 +223,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSave, onCancel }) 
                   <option value="">Add Fee Item</option>
                   {state.feeItems.map(feeItem => (
                     <option key={feeItem.id} value={feeItem.id}>
-                      {feeItem.name} - ${feeItem.amount}
+                      {feeItem.name} - ₹{feeItem.amount}
                     </option>
                   ))}
                 </select>
@@ -274,7 +274,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSave, onCancel }) 
                     />
                   </div>
                   <div className="w-24 text-right">
-                    <span className="font-medium">${item.total.toFixed(2)}</span>
+                    <span className="font-medium">₹{item.total.toFixed(2)}</span>
                   </div>
                   <button
                     type="button"
@@ -302,15 +302,15 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ invoice, onSave, onCancel }) 
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal:</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>₹{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Tax ({(taxRate * 100).toFixed(0)}%):</span>
-                  <span>${tax.toFixed(2)}</span>
+                  <span>₹{tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-lg font-semibold pt-2 border-t border-gray-300">
                   <span>Total:</span>
-                  <span className="text-blue-600">${total.toFixed(2)}</span>
+                  <span className="text-blue-600">₹{total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
