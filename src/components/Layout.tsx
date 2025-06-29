@@ -12,14 +12,17 @@ import {
   GraduationCap,
   ChevronDown
 } from 'lucide-react';
+import GlobalSearch from './GlobalSearch';
+import { Student, Teacher } from '../types';
 
 interface LayoutProps {
   children: React.ReactNode;
   currentPage: string;
   onPageChange: (page: string) => void;
+  onNavigateToDetails?: (type: 'student' | 'teacher', item: Student | Teacher) => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange }) => {
+const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, onNavigateToDetails }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const menuItems = [
@@ -38,6 +41,15 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange }) 
       case 'invoices': return 'Invoices';
       case 'fees': return 'Fee Structure';
       default: return 'Dashboard';
+    }
+  };
+
+  const handleSearchNavigation = (type: 'student' | 'teacher', item: Student | Teacher) => {
+    if (onNavigateToDetails) {
+      onNavigateToDetails(type, item);
+    } else {
+      // Fallback: navigate to the appropriate page
+      onPageChange(type === 'student' ? 'students' : 'teachers');
     }
   };
 
@@ -127,14 +139,9 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange }) 
 
             {/* Right side */}
             <div className="flex items-center space-x-4">
-              {/* Search */}
-              <div className="hidden md:flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2 w-64">
-                <Search className="w-4 h-4 text-gray-400" />
-                <input 
-                  type="text" 
-                  placeholder="Search students by name or roll number" 
-                  className="bg-transparent text-sm text-gray-600 placeholder-gray-400 focus:outline-none flex-1"
-                />
+              {/* Global Search */}
+              <div className="hidden md:block">
+                <GlobalSearch onNavigate={handleSearchNavigation} />
               </div>
 
               {/* Notifications */}
