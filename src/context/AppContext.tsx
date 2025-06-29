@@ -152,10 +152,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       
       // Fallback to default fee items if API fails
       const defaultFeeItems: FeeItem[] = [
-        { id: '1', name: 'Tuition Fee', amount: 500, type: 'monthly' },
-        { id: '2', name: 'Transportation', amount: 150, type: 'monthly' },
-        { id: '3', name: 'Activity Fee', amount: 100, type: 'monthly' },
-        { id: '4', name: 'Admission Fee', amount: 1000, type: 'one-time' },
+        { id: '1', name: 'Tuition Fee', amount: 2500, type: 'monthly' },
+        { id: '2', name: 'Transportation', amount: 800, type: 'monthly' },
+        { id: '3', name: 'Activity Fee', amount: 500, type: 'monthly' },
+        { id: '4', name: 'Admission Fee', amount: 5000, type: 'one-time' },
       ];
       dispatch({ type: 'SET_FEE_ITEMS', payload: defaultFeeItems });
     } finally {

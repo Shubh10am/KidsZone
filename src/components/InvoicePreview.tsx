@@ -242,8 +242,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose }) => 
                   <tr key={item.id} className="hover:bg-gray-50">
                     <td className="border border-gray-300 px-4 py-3">{item.name}</td>
                     <td className="border border-gray-300 px-4 py-3 text-center">{item.quantity}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-right">${item.amount.toFixed(2)}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-right font-semibold">${item.total.toFixed(2)}</td>
+                    <td className="border border-gray-300 px-4 py-3 text-right">₹{item.amount.toFixed(2)}</td>
+                    <td className="border border-gray-300 px-4 py-3 text-right font-semibold">₹{item.total.toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -256,15 +256,15 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose }) => 
               <div className="space-y-2">
                 <div className="flex justify-between py-1">
                   <span>Subtotal:</span>
-                  <span>${invoice.subtotal.toFixed(2)}</span>
+                  <span>₹{invoice.subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between py-1">
                   <span>Tax (8%):</span>
-                  <span>${invoice.tax.toFixed(2)}</span>
+                  <span>₹{invoice.tax.toFixed(2)}</span>
                 </div>
                 <div className={`flex justify-between py-2 border-t-2 ${styles.borderColor} font-bold text-lg`}>
                   <span>Total Amount:</span>
-                  <span className={styles.accentColor}>${invoice.total.toFixed(2)}</span>
+                  <span className={styles.accentColor}>₹{invoice.total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -278,6 +278,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose }) => 
               <p>• Please include the invoice number with your payment.</p>
               <p>• For questions about this invoice, please contact our office.</p>
               <p>• Late payments may incur additional fees.</p>
+              <p>• All amounts are in Indian Rupees (₹).</p>
             </div>
           </div>
 
