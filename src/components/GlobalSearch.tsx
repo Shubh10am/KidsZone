@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Search, User, GraduationCap, X } from 'lucide-react'
 import { useApp } from '@/context/AppContext'
 import { Student, Teacher } from '@/types'
@@ -25,7 +25,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Search function
-  const performSearch = (term: string) => {
+  const performSearch = useCallback((term: string) => {
     if (!term.trim()) {
       setResults([])
       return
@@ -99,7 +99,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
     })
 
     setResults(searchResults.slice(0, 8)) // Limit to 8 results
-  }
+  }, [state.students, state.teachers])
 
   // Handle search input change
   useEffect(() => {
@@ -108,7 +108,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
     }, 300)
 
     return () => clearTimeout(timeoutId)
-  }, [searchTerm, state.students, state.teachers])
+  }, [searchTerm, performSearch])
 
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {

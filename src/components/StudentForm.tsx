@@ -296,7 +296,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSave, onCancel }) 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="parentName" className="block text-sm font-medium text-gray-700 mb-2">
-                Parent's Name (Optional)
+                Parent&apos;s Name (Optional)
               </label>
               <input
                 type="text"
@@ -385,7 +385,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSave, onCancel }) 
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-medium text-gray-900 mb-4">Father's Contact</h4>
+              <h4 className="font-medium text-gray-900 mb-4">Father&apos;s Contact</h4>
               <div className="space-y-4">
                 <div>
                   <label htmlFor="fatherMobile" className="block text-sm font-medium text-gray-700 mb-2">
@@ -419,7 +419,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSave, onCancel }) 
             </div>
 
             <div>
-              <h4 className="font-medium text-gray-900 mb-4">Mother's Contact</h4>
+              <h4 className="font-medium text-gray-900 mb-4">Mother&apos;s Contact</h4>
               <div className="space-y-4">
                 <div>
                   <label htmlFor="motherMobile" className="block text-sm font-medium text-gray-700 mb-2">

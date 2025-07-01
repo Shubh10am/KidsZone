@@ -76,7 +76,7 @@ const TeacherView: React.FC<TeacherViewProps> = ({ teacher, onClose, onEdit }) =
               </div>
               
               <div className="space-y-1">
-                <label className="text-sm font-medium text-gray-500">Father's Name</label>
+                <label className="text-sm font-medium text-gray-500">Father&apos;s Name</label>
                 <p className="text-gray-900 font-medium">{teacher.fatherName}</p>
               </div>
               

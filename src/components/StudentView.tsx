@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Mail, Phone, Calendar, CreditCard, AlertTriangle, ArrowLeft, Edit, Car as IdCard } from 'lucide-react';
+import { X, User, Mail, Phone, Calendar, CreditCard, AlertTriangle, ArrowLeft, Edit, GraduationCap, Car as IdCard } from 'lucide-react';
 import { Student } from '../types';
 import StudentIDCard from './StudentIDCard';
 
@@ -126,7 +126,7 @@ const StudentView: React.FC<StudentViewProps> = ({ student, onClose, onEdit }) =
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1">
-                <label className="text-sm font-medium text-gray-500">Parent's Name</label>
+                <label className="text-sm font-medium text-gray-500">Parent&apos;s Name</label>
                 <p className="text-gray-900 font-medium">{student.parentName || 'Not specified'}</p>
               </div>
               
@@ -173,7 +173,7 @@ const StudentView: React.FC<StudentViewProps> = ({ student, onClose, onEdit }) =
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Father's Contact */}
               <div>
-                <h4 className="font-medium text-gray-900 mb-4">Father's Contact</h4>
+                <h4 className="font-medium text-gray-900 mb-4">Father&apos;s Contact</h4>
                 <div className="space-y-4">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-500">Mobile Number</label>
@@ -188,7 +188,7 @@ const StudentView: React.FC<StudentViewProps> = ({ student, onClose, onEdit }) =
 
               {/* Mother's Contact */}
               <div>
-                <h4 className="font-medium text-gray-900 mb-4">Mother's Contact</h4>
+                <h4 className="font-medium text-gray-900 mb-4">Mother&apos;s Contact</h4>
                 <div className="space-y-4">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-500">Mobile Number</label>

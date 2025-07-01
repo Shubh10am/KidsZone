@@ -370,7 +370,7 @@ const TeacherIDCard: React.FC<TeacherIDCardProps> = ({ teacher, onClose }) => {
                   </ul>
                 </div>
                 <div class="motto">
-                  <div class="motto-text">"Inspiring Minds, Shaping Futures"</div>
+                  <div class="motto-text">&ldquo;Inspiring Minds, Shaping Futures&rdquo;</div>
                 </div>
               </div>
             </div>
@@ -556,7 +556,7 @@ const TeacherIDCard: React.FC<TeacherIDCardProps> = ({ teacher, onClose }) => {
 
                     <div className="bg-green-100 rounded p-2 mt-2">
                       <p className="text-xs text-green-800 text-center font-medium">
-                        "Inspiring Minds, Shaping Futures"
+                        &ldquo;Inspiring Minds, Shaping Futures&rdquo;
                       </p>
                     </div>
                   </div>

@@ -71,7 +71,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ teacher, onSave, onCancel }) 
     }
     if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
     if (!formData.dateOfJoining) newErrors.dateOfJoining = 'Date of joining is required';
-    if (!formData.fatherName.trim()) newErrors.fatherName = 'Father\'s name is required';
+    if (!formData.fatherName.trim()) newErrors.fatherName = 'Father&apos;s name is required';
     if (!formData.verificationCardType) newErrors.verificationCardType = 'Verification card type is required';
     if (!formData.verificationCardNumber.trim()) newErrors.verificationCardNumber = 'Verification card number is required';
     if (!formData.mobileNumber.trim()) newErrors.mobileNumber = 'Mobile number is required';
@@ -255,7 +255,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ teacher, onSave, onCancel }) 
 
             <div>
               <label htmlFor="fatherName" className="block text-sm font-medium text-gray-700 mb-2">
-                Father's Name *
+                Father&apos;s Name *
               </label>
               <input
                 type="text"

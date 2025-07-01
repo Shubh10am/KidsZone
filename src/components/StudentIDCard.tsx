@@ -16,22 +16,7 @@ const StudentIDCard: React.FC<StudentIDCardProps> = ({ student, onClose }) => {
   };
 
   const handleDownload = () => {
-    // Create a canvas to generate the ID card as an image
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    
-    if (!ctx) {
-      alert('Canvas not supported. Please try printing instead.');
-      return;
-    }
-
-    // Set canvas size for ID card (standard credit card size in pixels at 300 DPI)
-    const cardWidth = 1012; // 85.6mm at 300 DPI
-    const cardHeight = 638; // 53.98mm at 300 DPI
-    canvas.width = cardWidth;
-    canvas.height = cardHeight;
-
-    // Create a new window with printable content
+    // Create a new window for printing/downloading
     const printWindow = window.open('', '_blank', 'width=800,height=600');
     if (printWindow) {
       printWindow.document.write(`
@@ -377,7 +362,7 @@ const StudentIDCard: React.FC<StudentIDCardProps> = ({ student, onClose }) => {
                   </ul>
                 </div>
                 <div class="motto">
-                  <div class="motto-text">"Learning Today, Leading Tomorrow"</div>
+                  <div class="motto-text">&ldquo;Learning Today, Leading Tomorrow&rdquo;</div>
                 </div>
               </div>
             </div>
@@ -545,7 +530,7 @@ const StudentIDCard: React.FC<StudentIDCardProps> = ({ student, onClose }) => {
 
                     <div className="bg-blue-100 rounded p-2 mt-2">
                       <p className="text-xs text-blue-800 text-center font-medium">
-                        "Learning Today, Leading Tomorrow"
+                        &ldquo;Learning Today, Leading Tomorrow&rdquo;
                       </p>
                     </div>
                   </div>
