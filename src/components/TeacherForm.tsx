@@ -112,8 +112,8 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ teacher, onSave, onCancel }) 
         fatherName: formData.fatherName.trim(),
         age,
         verificationCard: {
-          type: formData.verificationCardType,
-          number: formData.verificationCardNumber.trim()
+          type: formData.verificationCardType || 'aadhar', // Default to 'aadhar' if empty
+          number: formData.verificationCardNumber.trim(),
         },
         mobileNumber: formData.mobileNumber.trim(),
         emergencyNumber: formData.emergencyNumber.trim(),
