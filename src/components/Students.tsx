@@ -1,66 +1,68 @@
-import React, { useState } from 'react';
-import { Plus, Search, Edit, Trash2, Mail, Phone, Users, User, GraduationCap, MoreVertical, Eye } from 'lucide-react';
-import { useApp } from '../context/AppContext';
-import { Student } from '../types';
-import { studentsApi } from '../services/api';
-import StudentForm from './StudentForm';
-import StudentView from './StudentView';
+'use client'
+
+import React, { useState } from 'react'
+import { Plus, Search, Edit, Trash2, Mail, Phone, Users, User, GraduationCap, MoreVertical, Eye } from 'lucide-react'
+import { useApp } from '@/context/AppContext'
+import { Student } from '@/types'
+import { studentsApi } from '@/lib/api'
+import StudentForm from './StudentForm'
+import StudentView from './StudentView'
 
 const Students: React.FC = () => {
-  const { state, dispatch } = useApp();
-  const [showForm, setShowForm] = useState(false);
-  const [showView, setShowView] = useState(false);
-  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
-  const [viewingStudent, setViewingStudent] = useState<Student | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { state, dispatch } = useApp()
+  const [showForm, setShowForm] = useState(false)
+  const [showView, setShowView] = useState(false)
+  const [editingStudent, setEditingStudent] = useState<Student | null>(null)
+  const [viewingStudent, setViewingStudent] = useState<Student | null>(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const filteredStudents = state.students.filter(student =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.grade.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  )
 
   const handleAddStudent = () => {
-    setEditingStudent(null);
-    setShowForm(true);
-  };
+    setEditingStudent(null)
+    setShowForm(true)
+  }
 
   const handleViewStudent = (student: Student) => {
-    setViewingStudent(student);
-    setShowView(true);
-  };
+    setViewingStudent(student)
+    setShowView(true)
+  }
 
   const handleEditStudent = (student: Student, e?: React.MouseEvent) => {
     if (e) {
-      e.stopPropagation(); // Prevent card click when edit button is clicked
+      e.stopPropagation() // Prevent card click when edit button is clicked
     }
-    setEditingStudent(student);
-    setShowForm(true);
-  };
+    setEditingStudent(student)
+    setShowForm(true)
+  }
 
   const handleDeleteStudent = async (studentId: string, e?: React.MouseEvent) => {
     if (e) {
-      e.stopPropagation(); // Prevent card click when delete button is clicked
+      e.stopPropagation() // Prevent card click when delete button is clicked
     }
     if (window.confirm('Are you sure you want to delete this student? This will also delete all associated invoices.')) {
-      setLoading(true);
+      setLoading(true)
       try {
-        await studentsApi.delete(studentId);
-        dispatch({ type: 'DELETE_STUDENT', payload: studentId });
+        await studentsApi.delete(studentId)
+        dispatch({ type: 'DELETE_STUDENT', payload: studentId })
       } catch (error) {
-        console.error('Error deleting student:', error);
-        dispatch({ type: 'SET_ERROR', payload: 'Failed to delete student. Please try again.' });
+        console.error('Error deleting student:', error)
+        dispatch({ type: 'SET_ERROR', payload: 'Failed to delete student. Please try again.' })
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-  };
+  }
 
   const handleSaveStudent = (student: Student) => {
-    setShowForm(false);
-    setEditingStudent(null);
-  };
+    setShowForm(false)
+    setEditingStudent(null)
+  }
 
   if (showForm) {
     return (
@@ -68,11 +70,11 @@ const Students: React.FC = () => {
         student={editingStudent}
         onSave={handleSaveStudent}
         onCancel={() => {
-          setShowForm(false);
-          setEditingStudent(null);
+          setShowForm(false)
+          setEditingStudent(null)
         }}
       />
-    );
+    )
   }
 
   if (showView && viewingStudent) {
@@ -80,17 +82,17 @@ const Students: React.FC = () => {
       <StudentView
         student={viewingStudent}
         onClose={() => {
-          setShowView(false);
-          setViewingStudent(null);
+          setShowView(false)
+          setViewingStudent(null)
         }}
         onEdit={() => {
-          setShowView(false);
-          setEditingStudent(viewingStudent);
-          setViewingStudent(null);
-          setShowForm(true);
+          setShowView(false)
+          setEditingStudent(viewingStudent)
+          setViewingStudent(null)
+          setShowForm(true)
         }}
       />
-    );
+    )
   }
 
   return (
@@ -207,7 +209,7 @@ const Students: React.FC = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Students;
+export default Students

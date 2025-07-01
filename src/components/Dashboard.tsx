@@ -1,13 +1,15 @@
-import React from 'react';
-import { Users, FileText, DollarSign, Calendar, TrendingUp, Award, BookOpen, Star, Plus, ArrowRight } from 'lucide-react';
-import { useApp } from '../context/AppContext';
+'use client'
+
+import React from 'react'
+import { Users, FileText, DollarSign, Calendar, TrendingUp, Award, BookOpen, Star, Plus, ArrowRight } from 'lucide-react'
+import { useApp } from '@/context/AppContext'
 
 interface DashboardProps {
-  onPageChange: (page: string) => void;
+  onPageChange: (page: string) => void
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
-  const { state } = useApp();
+  const { state } = useApp()
 
   const stats = [
     {
@@ -50,11 +52,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
       changeColor: 'text-red-600',
       onClick: () => onPageChange('invoices')
     },
-  ];
+  ]
 
   const recentInvoices = state.invoices
     .sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime())
-    .slice(0, 5);
+    .slice(0, 5)
 
   const quickActions = [
     {
@@ -78,7 +80,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
       color: 'bg-purple-600',
       action: () => onPageChange('invoices')
     }
-  ];
+  ]
 
   return (
     <div className="space-y-6">
@@ -87,7 +89,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Welcome back! 👋</h1>
-            <p className="text-gray-600 mt-1">Here's what's happening at Kid's Zone Academy today.</p>
+            <p className="text-gray-600 mt-1">Here&apos;s what&apos;s happening at Kid&apos;s Zone Academy today.</p>
           </div>
           <div className="hidden lg:block">
             <img 
@@ -102,7 +104,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => {
-          const Icon = stat.icon;
+          const Icon = stat.icon
           return (
             <button
               key={index}
@@ -123,7 +125,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
                 <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
               </div>
             </button>
-          );
+          )
         })}
       </div>
 
@@ -139,7 +141,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
             
             <div className="space-y-3">
               {quickActions.map((action, index) => {
-                const Icon = action.icon;
+                const Icon = action.icon
                 return (
                   <button
                     key={index}
@@ -157,7 +159,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
                       <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
                     </div>
                   </button>
-                );
+                )
               })}
             </div>
           </div>
@@ -230,7 +232,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Star className="w-8 h-8 text-blue-600" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Let's Get Started! 🚀</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Let&apos;s Get Started! 🚀</h2>
             <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
               Welcome to your new school management system! Follow these simple steps to set up your academy.
             </p>
@@ -281,7 +283,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

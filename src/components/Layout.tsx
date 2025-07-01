@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+'use client'
+
+import React, { useState } from 'react'
 import { 
   Users, 
   FileText, 
@@ -12,19 +14,19 @@ import {
   GraduationCap,
   ChevronDown,
   Clock
-} from 'lucide-react';
-import GlobalSearch from './GlobalSearch';
-import { Student, Teacher } from '../types';
+} from 'lucide-react'
+import GlobalSearch from './GlobalSearch'
+import { Student, Teacher } from '@/types'
 
 interface LayoutProps {
-  children: React.ReactNode;
-  currentPage: string;
-  onPageChange: (page: string) => void;
-  onNavigateToDetails?: (type: 'student' | 'teacher', item: Student | Teacher) => void;
+  children: React.ReactNode
+  currentPage: string
+  onPageChange: (page: string) => void
+  onNavigateToDetails?: (type: 'student' | 'teacher', item: Student | Teacher) => void
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, onNavigateToDetails }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
@@ -33,30 +35,30 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, on
     { id: 'attendance', label: 'Attendance', icon: Clock },
     { id: 'invoices', label: 'Invoices', icon: FileText },
     { id: 'fees', label: 'Fee Structure', icon: DollarSign },
-  ];
+  ]
 
   const getPageTitle = (page: string) => {
     switch (page) {
-      case 'dashboard': return 'Dashboard';
-      case 'students': return 'Students';
-      case 'teachers': return 'Teachers';
-      case 'attendance': return 'Attendance';
-      case 'invoices': return 'Invoices';
-      case 'fees': return 'Fee Structure';
-      case 'student-view': return 'Student Details';
-      case 'teacher-view': return 'Teacher Details';
-      default: return 'Dashboard';
+      case 'dashboard': return 'Dashboard'
+      case 'students': return 'Students'
+      case 'teachers': return 'Teachers'
+      case 'attendance': return 'Attendance'
+      case 'invoices': return 'Invoices'
+      case 'fees': return 'Fee Structure'
+      case 'student-view': return 'Student Details'
+      case 'teacher-view': return 'Teacher Details'
+      default: return 'Dashboard'
     }
-  };
+  }
 
   const handleSearchNavigation = (type: 'student' | 'teacher', item: Student | Teacher) => {
     if (onNavigateToDetails) {
-      onNavigateToDetails(type, item);
+      onNavigateToDetails(type, item)
     } else {
       // Fallback: navigate to the appropriate page
-      onPageChange(type === 'student' ? 'students' : 'teachers');
+      onPageChange(type === 'student' ? 'students' : 'teachers')
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -81,7 +83,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, on
               <span className="text-white font-bold text-sm">KZ</span>
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">Kid's Zone Academy</h1>
+              <h1 className="text-lg font-semibold text-gray-900">Kid&apos;s Zone Academy</h1>
             </div>
           </div>
           <button
@@ -95,15 +97,15 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, on
         {/* Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-1">
           {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = currentPage === item.id;
+            const Icon = item.icon
+            const isActive = currentPage === item.id
             
             return (
               <button
                 key={item.id}
                 onClick={() => {
-                  onPageChange(item.id);
-                  setSidebarOpen(false);
+                  onPageChange(item.id)
+                  setSidebarOpen(false)
                 }}
                 className={`
                   w-full flex items-center px-3 py-2.5 text-left transition-all duration-200 rounded-lg text-sm font-medium
@@ -116,7 +118,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, on
                 <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-blue-700' : 'text-gray-400'}`} />
                 <span>{item.label}</span>
               </button>
-            );
+            )
           })}
         </nav>
       </div>
@@ -176,7 +178,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentPage, onPageChange, on
         </main>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

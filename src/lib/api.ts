@@ -1,14 +1,16 @@
-import axios from 'axios';
-import { Student, Teacher, Invoice, FeeItem } from '../types';
+import axios from 'axios'
+import { Student, Teacher, Invoice, FeeItem } from '@/types'
 
-const API_BASE_URL = 'https://kidszone-ho5b.onrender.com/api/';
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://kidszone-ho5b.onrender.com/api'
+  : '/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-});
+})
 
 // Students API
 export const studentsApi = {
@@ -18,7 +20,7 @@ export const studentsApi = {
   update: (id: string, student: Partial<Student>) => api.put<Student>(`/students/${id}`, student),
   delete: (id: string) => api.delete(`/students/${id}`),
   getNextRollNumber: () => api.get<{ rollNumber: string }>('/students/next-roll-number'),
-};
+}
 
 // Teachers API
 export const teachersApi = {
@@ -27,7 +29,7 @@ export const teachersApi = {
   create: (teacher: Omit<Teacher, 'id'>) => api.post<Teacher>('/teachers', teacher),
   update: (id: string, teacher: Partial<Teacher>) => api.put<Teacher>(`/teachers/${id}`, teacher),
   delete: (id: string) => api.delete(`/teachers/${id}`),
-};
+}
 
 // Invoices API
 export const invoicesApi = {
@@ -36,7 +38,7 @@ export const invoicesApi = {
   create: (invoice: Omit<Invoice, 'id'>) => api.post<Invoice>('/invoices', invoice),
   update: (id: string, invoice: Partial<Invoice>) => api.put<Invoice>(`/invoices/${id}`, invoice),
   delete: (id: string) => api.delete(`/invoices/${id}`),
-};
+}
 
 // Fee Items API
 export const feeItemsApi = {
@@ -45,6 +47,6 @@ export const feeItemsApi = {
   create: (feeItem: Omit<FeeItem, 'id'>) => api.post<FeeItem>('/fee-items', feeItem),
   update: (id: string, feeItem: Partial<FeeItem>) => api.put<FeeItem>(`/fee-items/${id}`, feeItem),
   delete: (id: string) => api.delete(`/fee-items/${id}`),
-};
+}
 
-export default api;
+export default api

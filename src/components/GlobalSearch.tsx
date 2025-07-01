@@ -1,52 +1,54 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Search, User, GraduationCap, X } from 'lucide-react';
-import { useApp } from '../context/AppContext';
-import { Student, Teacher } from '../types';
+'use client'
+
+import React, { useState, useEffect, useRef } from 'react'
+import { Search, User, GraduationCap, X } from 'lucide-react'
+import { useApp } from '@/context/AppContext'
+import { Student, Teacher } from '@/types'
 
 interface SearchResult {
-  type: 'student' | 'teacher';
-  item: Student | Teacher;
-  matchField: string;
+  type: 'student' | 'teacher'
+  item: Student | Teacher
+  matchField: string
 }
 
 interface GlobalSearchProps {
-  onNavigate: (type: 'student' | 'teacher', item: Student | Teacher) => void;
+  onNavigate: (type: 'student' | 'teacher', item: Student | Teacher) => void
 }
 
 const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
-  const { state } = useApp();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(-1);
-  const searchRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { state } = useApp()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [results, setResults] = useState<SearchResult[]>([])
+  const [isOpen, setIsOpen] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(-1)
+  const searchRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   // Search function
   const performSearch = (term: string) => {
     if (!term.trim()) {
-      setResults([]);
-      return;
+      setResults([])
+      return
     }
 
-    const searchResults: SearchResult[] = [];
-    const lowerTerm = term.toLowerCase();
+    const searchResults: SearchResult[] = []
+    const lowerTerm = term.toLowerCase()
 
     // Search students
     state.students.forEach(student => {
-      const matches = [];
+      const matches = []
       
       if (student.name.toLowerCase().includes(lowerTerm)) {
-        matches.push('name');
+        matches.push('name')
       }
       if (student.rollNumber.toLowerCase().includes(lowerTerm)) {
-        matches.push('roll number');
+        matches.push('roll number')
       }
       if (student.grade.toLowerCase().includes(lowerTerm)) {
-        matches.push('grade');
+        matches.push('grade')
       }
       if (student.parentEmail.toLowerCase().includes(lowerTerm)) {
-        matches.push('parent email');
+        matches.push('parent email')
       }
 
       if (matches.length > 0) {
@@ -54,25 +56,25 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
           type: 'student',
           item: student,
           matchField: matches[0]
-        });
+        })
       }
-    });
+    })
 
     // Search teachers
     state.teachers.forEach(teacher => {
-      const matches = [];
+      const matches = []
       
       if (teacher.name.toLowerCase().includes(lowerTerm)) {
-        matches.push('name');
+        matches.push('name')
       }
       if (teacher.email.toLowerCase().includes(lowerTerm)) {
-        matches.push('email');
+        matches.push('email')
       }
       if (teacher.fatherName.toLowerCase().includes(lowerTerm)) {
-        matches.push('father name');
+        matches.push('father name')
       }
       if (teacher.mobileNumber.includes(term)) {
-        matches.push('mobile');
+        matches.push('mobile')
       }
 
       if (matches.length > 0) {
@@ -80,109 +82,109 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
           type: 'teacher',
           item: teacher,
           matchField: matches[0]
-        });
+        })
       }
-    });
+    })
 
     // Sort results: exact matches first, then partial matches
     searchResults.sort((a, b) => {
       const aExact = a.item.name.toLowerCase() === lowerTerm || 
-                    (a.type === 'student' && (a.item as Student).rollNumber.toLowerCase() === lowerTerm);
+                    (a.type === 'student' && (a.item as Student).rollNumber.toLowerCase() === lowerTerm)
       const bExact = b.item.name.toLowerCase() === lowerTerm || 
-                    (b.type === 'student' && (b.item as Student).rollNumber.toLowerCase() === lowerTerm);
+                    (b.type === 'student' && (b.item as Student).rollNumber.toLowerCase() === lowerTerm)
       
-      if (aExact && !bExact) return -1;
-      if (!aExact && bExact) return 1;
-      return 0;
-    });
+      if (aExact && !bExact) return -1
+      if (!aExact && bExact) return 1
+      return 0
+    })
 
-    setResults(searchResults.slice(0, 8)); // Limit to 8 results
-  };
+    setResults(searchResults.slice(0, 8)) // Limit to 8 results
+  }
 
   // Handle search input change
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      performSearch(searchTerm);
-    }, 300);
+      performSearch(searchTerm)
+    }, 300)
 
-    return () => clearTimeout(timeoutId);
-  }, [searchTerm, state.students, state.teachers]);
+    return () => clearTimeout(timeoutId)
+  }, [searchTerm, state.students, state.teachers])
 
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!isOpen || results.length === 0) return;
+    if (!isOpen || results.length === 0) return
 
     switch (e.key) {
       case 'ArrowDown':
-        e.preventDefault();
+        e.preventDefault()
         setSelectedIndex(prev => 
           prev < results.length - 1 ? prev + 1 : prev
-        );
-        break;
+        )
+        break
       case 'ArrowUp':
-        e.preventDefault();
-        setSelectedIndex(prev => prev > 0 ? prev - 1 : -1);
-        break;
+        e.preventDefault()
+        setSelectedIndex(prev => prev > 0 ? prev - 1 : -1)
+        break
       case 'Enter':
-        e.preventDefault();
+        e.preventDefault()
         if (selectedIndex >= 0 && selectedIndex < results.length) {
-          const result = results[selectedIndex];
-          handleResultClick(result);
+          const result = results[selectedIndex]
+          handleResultClick(result)
         }
-        break;
+        break
       case 'Escape':
-        setIsOpen(false);
-        setSelectedIndex(-1);
-        inputRef.current?.blur();
-        break;
+        setIsOpen(false)
+        setSelectedIndex(-1)
+        inputRef.current?.blur()
+        break
     }
-  };
+  }
 
   // Handle result click
   const handleResultClick = (result: SearchResult) => {
-    onNavigate(result.type, result.item);
-    setSearchTerm('');
-    setResults([]);
-    setIsOpen(false);
-    setSelectedIndex(-1);
-    inputRef.current?.blur();
-  };
+    onNavigate(result.type, result.item)
+    setSearchTerm('')
+    setResults([])
+    setIsOpen(false)
+    setSelectedIndex(-1)
+    inputRef.current?.blur()
+  }
 
   // Handle input focus
   const handleFocus = () => {
-    setIsOpen(true);
+    setIsOpen(true)
     if (searchTerm.trim()) {
-      performSearch(searchTerm);
+      performSearch(searchTerm)
     }
-  };
+  }
 
   // Handle click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-        setSelectedIndex(-1);
+        setIsOpen(false)
+        setSelectedIndex(-1)
       }
-    };
+    }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Clear search
   const clearSearch = () => {
-    setSearchTerm('');
-    setResults([]);
-    setIsOpen(false);
-    setSelectedIndex(-1);
-    inputRef.current?.focus();
-  };
+    setSearchTerm('')
+    setResults([])
+    setIsOpen(false)
+    setSelectedIndex(-1)
+    inputRef.current?.focus()
+  }
 
   const highlightMatch = (text: string, searchTerm: string) => {
-    if (!searchTerm.trim()) return text;
+    if (!searchTerm.trim()) return text
     
-    const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    const parts = text.split(regex);
+    const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
+    const parts = text.split(regex)
     
     return parts.map((part, index) => 
       regex.test(part) ? (
@@ -190,8 +192,8 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
           {part}
         </mark>
       ) : part
-    );
-  };
+    )
+  }
 
   return (
     <div ref={searchRef} className="relative w-full max-w-lg">
@@ -319,7 +321,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ onNavigate }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default GlobalSearch;
+export default GlobalSearch
