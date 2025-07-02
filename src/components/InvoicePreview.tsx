@@ -3,6 +3,7 @@ import { X, Download, Printer, Palette, Share2 } from 'lucide-react';
 import { Invoice } from '../types';
 import { useApp } from '../context/AppContext';
 import InvoiceTemplates from './InvoiceTemplates';
+import Image from 'next/image';
 
 interface InvoicePreviewProps {
   invoice: Invoice;
@@ -138,14 +139,12 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose }) => 
               <div className="flex items-start space-x-6">
                 {/* Logo */}
                 <div className="flex-shrink-0">
-                  <img 
-                    src={state.schoolInfo.logo} 
+                  <Image 
+                    src={state.schoolInfo.logo || '/Kid-Zone Logo.png'} 
                     alt={state.schoolInfo.name}
-                    className="w-20 h-20 rounded-lg bg-white p-2 shadow-lg"
-                    onError={(e) => {
-                      // Fallback if logo fails to load
-                      e.currentTarget.style.display = 'none';
-                    }}
+                    width={80}
+                    height={80}
+                    className="rounded-lg bg-white p-2 shadow-lg"
                   />
                 </div>
                 

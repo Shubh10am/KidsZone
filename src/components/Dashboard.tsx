@@ -3,6 +3,7 @@
 import React from 'react'
 import { Users, FileText, DollarSign, Calendar, TrendingUp, Award, BookOpen, Star, Plus, ArrowRight } from 'lucide-react'
 import { useApp } from '@/context/AppContext'
+import Image from 'next/image'
 
 interface DashboardProps {
   onPageChange: (page: string) => void
@@ -92,10 +93,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
             <p className="text-gray-600 mt-1">Here&apos;s what&apos;s happening at Kid&apos;s Zone Academy today.</p>
           </div>
           <div className="hidden lg:block">
-            <img 
+            <Image 
               src="/Kid-Zone Logo.png" 
               alt="KID'S ZONE ACADEMY" 
-              className="w-16 h-16 rounded-lg"
+              width={64}
+              height={64}
+              className="rounded-lg"
             />
           </div>
         </div>

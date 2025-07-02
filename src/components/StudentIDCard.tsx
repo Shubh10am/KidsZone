@@ -2,6 +2,7 @@ import React from 'react';
 import { Download, Printer, X } from 'lucide-react';
 import { Student } from '../types';
 import { useApp } from '../context/AppContext';
+import Image from 'next/image';
 
 interface StudentIDCardProps {
   student: Student;
@@ -437,13 +438,12 @@ const StudentIDCard: React.FC<StudentIDCardProps> = ({ student, onClose }) => {
                 <div className="w-80 h-48 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-6 border-2 border-blue-200 shadow-lg">
                   {/* School Header */}
                   <div className="flex items-center justify-center space-x-3 mb-4">
-                    <img 
-                      src={state.schoolInfo.logo} 
+                    <Image 
+                      src={state.schoolInfo.logo || '/Kid-Zone Logo.png'} 
                       alt={state.schoolInfo.name}
-                      className="w-8 h-8 rounded-lg shadow-md"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
+                      width={32}
+                      height={32}
+                      className="rounded-lg shadow-md"
                     />
                     <div className="text-center">
                       <h1 className="text-sm font-bold text-blue-900">{state.schoolInfo.name}</h1>
