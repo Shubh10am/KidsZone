@@ -1,9 +1,7 @@
 import axios from 'axios'
 import { Student, Teacher, Invoice, FeeItem } from '@/types'
 
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://kidszone-ho5b.onrender.com/api'
-  : '/api'
+const API_BASE_URL = '/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
